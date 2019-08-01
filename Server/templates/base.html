@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block head %}{% endblock %}
+  <link rel="stylesheet" type="text/css" title="Cool stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% block body %}{% endblock %}
+  <div id="root">
+    This is flask server that is built for login in unity.
+
+  </div>
+  <!-- <script src="main.js" type="text/javascript"></script>-->
+</body>
+</html>
