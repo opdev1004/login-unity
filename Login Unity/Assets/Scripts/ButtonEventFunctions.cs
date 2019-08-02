@@ -45,12 +45,6 @@ public class ButtonEventFunctions : MonoBehaviour
 			User user = new User(id, pswd);
 			string userData = JsonUtility.ToJson(user);
 			StartCoroutine(RegisterResponse(userData));
-
-			inpuptID.text = "";
-			inputPswd.text = "";
-			inputCpswd.text = "";
-			loginPanel.SetActive(true);
-			registerPanel.SetActive(false);
 		}
 		else
 		{
@@ -79,11 +73,14 @@ public class ButtonEventFunctions : MonoBehaviour
             {
                 sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
             }
-            // Print Headers
-            print(sb.ToString());
-
-            // Print Body
-            print(uwr.downloadHandler.text);
+			if(uwr.downloadHandler.text == "Registered")
+			{
+				finishedRegister();
+			}
+			else
+			{
+				RegisterShowMSG(uwr.downloadHandler.text);
+			}
         }
 	}
 
@@ -97,4 +94,22 @@ public class ButtonEventFunctions : MonoBehaviour
 			return false;
 		}
 	}
+
+	private void RegisterShowMSG(string msg)
+	{
+		(GameObject.Find("Message").GetComponent(typeof(TextMeshProUGUI)) as TextMeshProUGUI).text = msg;
+	}
+
+	private void finishedRegister()
+	{
+		TMP_InputField inpuptID = GameObject.Find("User Name").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		TMP_InputField inputPswd = GameObject.Find("Password").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		TMP_InputField inputCpswd = GameObject.Find("Confirm Password").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		inpuptID.text = "";
+		inputPswd.text = "";
+		inputCpswd.text = "";
+		loginPanel.SetActive(true);
+		registerPanel.SetActive(false);
+	}
+
 }
