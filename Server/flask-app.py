@@ -44,12 +44,6 @@ def register():
         print("The username already exists.")
         return "The username already exists."
 
-    """
-    for row in records:
-        print("User = ", row[0])
-        print("Salt = ", row[1])
-        print("Hash  = ", row[2])
-    """
     # closing the cursor
     cursor.close()
     # closing database connection.
@@ -70,6 +64,36 @@ def randomString(stringLength):
     return ''.join(random.choice(lettersAndDigits) for i in range(stringLength))
 
 @app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    mariadb_connection = mariadb.connect(host='localhost', port=3306, user=dbun, password=dbpw, database=db)
+    cursor = mariadb_connection.cursor()
+    cursor.execute("SELECT * FROM " + dbTable + " WHERE User='" + data["id"] + "'")
+    records = cursor.fetchall()
+    dbSalt = ""
+    dbHash = ""
+    for row in records:
+        print("User: ", row[0], "is trying to login")
+        dbSalt = row[1]
+        dbHash = row[2]
+
+    hash = hashlib.sha3_512((data["password"] + dbSalt).encode("utf-8")).hexdigest()
+    if(hash == dbHash):
+        print("Loggedin")
+        return "Loggedin"
+    else:
+        print("Password or User name is wrong.")
+        return "Password or User name is wrong."
+
+    # closing the cursor
+    cursor.close()
+    # closing database connection.
+    if(mariadb_connection.is_connected()):
+        mariadb_connection.close()
+        print("MySQL connection is closed")
+
+    print("Unexpected error. \n Please try again later.")
+    return "Unexpected error. \n Please try again later."
 
 @app.after_request
 def add_header(response):

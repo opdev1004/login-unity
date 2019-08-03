@@ -9,7 +9,9 @@ public class ButtonEventFunctions : MonoBehaviour
 {
 	public GameObject loginPanel;
 	public GameObject registerPanel;
+	public GameObject loggedinPanel;
 	private string server = "http://127.0.0.1:5000/";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,7 +50,7 @@ public class ButtonEventFunctions : MonoBehaviour
 		}
 		else
 		{
-			print("The password and confirm password must be same,");
+			RegisterShowMSG("The password and confirm password must be same,");
 		}
 	}
 
@@ -112,4 +114,60 @@ public class ButtonEventFunctions : MonoBehaviour
 		registerPanel.SetActive(false);
 	}
 
+
+	public void login(){
+		TMP_InputField inpuptID = GameObject.Find("User Name").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		TMP_InputField inputPswd = GameObject.Find("Password").GetComponent(typeof(TMP_InputField)) as TMP_InputField;
+		string id = inpuptID.text;
+		string pswd = inputPswd.text;
+
+		User user = new User(id, pswd);
+		string userData = JsonUtility.ToJson(user);
+		StartCoroutine(LoginResponse(userData));
+	}
+
+	private IEnumerator LoginResponse(string userData)
+	{
+		UnityWebRequest uwr = new UnityWebRequest(server + "login", "POST");
+		byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(userData);
+		uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+		uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+	    uwr.SetRequestHeader("Content-Type", "application/json");
+		yield return uwr.SendWebRequest();
+
+        if (uwr.isNetworkError || uwr.isHttpError)
+        {
+            Debug.Log(uwr.error);
+        }
+        else
+        {
+            Debug.Log("POST done!");
+			StringBuilder sb = new StringBuilder();
+            foreach (System.Collections.Generic.KeyValuePair<string, string> dict in uwr.GetResponseHeaders())
+            {
+                sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+            }
+			if(uwr.downloadHandler.text == "Loggedin")
+			{
+				User user = JsonUtility.FromJson<User>(userData);
+				loggedin(user.id);
+			}
+			else
+			{
+				RegisterShowMSG(uwr.downloadHandler.text);
+			}
+
+        }
+	}
+
+	private void loggedin(string userName) {
+		loginPanel.SetActive(false);
+		loggedinPanel.SetActive(true);
+		RegisterShowMSG("Welcome! " + userName + "!");
+	}
+
+	public void logout(){
+		loggedinPanel.SetActive(false);
+		loginPanel.SetActive(true);
+	}
 }
