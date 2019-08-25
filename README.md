@@ -16,9 +16,9 @@ SHA3 and salt for hashing the password.
 ## Register Page
 
 ![Alt register](/img/login-register.jpg)
-![Alt Login](/img/login-register.jpg)
-![Alt Login](/img/flask-server-register.jpg)
+![Alt registerdata](/img/login-register-with-data.jpg)
+![Alt serverregister](/img/flask-server-register.jpg)
 ### Database before registration
-![Alt Old](/img/database-contents.jpg)
+![Alt olddb](/img/database-contents.jpg)
 ### Database after registration
-![Alt Login](/img/database-contents-new.jpg)
+![Alt newdb](/img/database-contents-new.jpg)
