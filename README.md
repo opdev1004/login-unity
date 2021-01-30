@@ -4,6 +4,8 @@ Login/Logout/Register in unity. Python Flask server and MariaDB
 
 SHA3 and salt for hashing the password.
 
+## Notice
+This repository is not going to be maintained. However you are welcome to create a pull request and improve the project.
 
 ## Login Page
 
